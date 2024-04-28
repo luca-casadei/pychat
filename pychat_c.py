@@ -27,7 +27,6 @@ non bloccare la console sull'input.
 
 # Processo per l'invio dei messaggi.
 
-
 def send_message(socket):
     while True:
         try:
@@ -38,8 +37,8 @@ def send_message(socket):
             # Per qualsiasi eccezione termino questo thread.
             break
 
-# Processo per la ricezione dei messaggi.
 
+# Processo per la ricezione dei messaggi.
 
 def receive_message(socket):
     while True:

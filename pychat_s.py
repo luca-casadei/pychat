@@ -9,15 +9,27 @@ Luca Casadei - Martin Tomassi - Francesco Pazzaglia
 '''
 
 # Conservo qui i client che si sono connessi al server.
-clients = []
+clients = {}
 
-# Invio a tutti i client connessi un messaggio.
-
-
-def do_broadcast(message):
-    for conn in clients:
+# Invio a tutti i client connessi un messaggio di informazione.
+def do_info_broadcast(message):
+    for conn in clients.values():
         conn.send(message.encode(pcf.encoding))
 
+# Invio a tutti i client connessi un messaggio da parte di un utente.
+def do_message_broadcast(name, message):
+    for client_name, conn in clients.items():
+        if name == client_name:
+            conn.send(("Tu: " + message).encode(pcf.encoding))
+        else:
+            conn.send((name + ": " + message).encode(pcf.encoding))
+        
+# Invio la lista dei client connessi solo al client che lo ha eseguito.
+def get_user_list():
+    user_count = len(clients)
+    prefix = f"Utenti online ({user_count}):\n"
+    user_list = "\n".join(clients.keys())
+    return prefix + user_list
 
 '''
 Classe che gestisce le richieste di invio di un messaggio, handler passato
@@ -28,18 +40,20 @@ come parametro al metodo ThreadingTCPServer di socketserver.
 class ChatReqHandler(srv.BaseRequestHandler):
     def handle(self):
         # Client connesso, lo aggiungo alla lista
-        clients.append(self.request)
         name = str(self.request.recv(pcf.message_size), pcf.encoding)
-        do_broadcast(name + " si è unito alla chat.")
+        clients[name] = self.request
+        do_info_broadcast(name + " si è unito alla chat.")
         while True:
             try:
-                # Il messaggio contiene [Nome]: Testo
                 message = str(
                     self.request.recv(
                         pcf.message_size),
                     pcf.encoding)
-                if message:
-                    do_broadcast(name + ": " + message)
+                if message: 
+                    if message.lower() == "/list":
+                        self.request.send(get_user_list().encode(pcf.encoding))
+                    else:
+                        do_message_broadcast(name, message)
                 else:
                     # Se il messaggio è vuoto ho un errore o il client non è
                     # più raggiungibile.
@@ -49,8 +63,8 @@ class ChatReqHandler(srv.BaseRequestHandler):
                 break
         # Quando si verifica un errore di disconnessione forzata, elimino il
         # client dalla lista.
-        clients.remove(self.request)
-        do_broadcast(name + " si è disconnesso dalla chat.")
+        del clients[name]
+        do_info_broadcast(name + " si è disconnesso dalla chat.")
 
 
 server = srv.ThreadingTCPServer(('', pcf.port), ChatReqHandler)
