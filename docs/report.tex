@@ -18,6 +18,15 @@ Il server gestisce le connessioni dei client e invia i messaggi in modalità bro
 E' stato scelto di utilizzare il protocollo a livello di trasporto chiamato \textbf{T}ransimission \textbf{C}ontrol \textbf{P}rotocol perché garantisce la consegna affidabile dei dati, quindi nel caso di una chat è fondamentale che i messaggi vengano inviati e ricevuti in maniera corretta senza alcun tipo di perdita.
 
 \chapter{Client}
+Per stabilire una connessione, il client deve specificare il proprio indirizzo IP in rete e un nome utente univoco, che servirà a identificarlo all'interno della chatroom.
+\\
+Inizialmente, il client crea un socket e tenta di stabilire una connessione con il server utilizzando l'indirizzo IP e la porta specificati. Se la connessione non riesce, il client gestisce l'errore sollevando un'eccezione.
+\\
+Una volta stabilita la connessione, il client utilizza due thread separati per la trasmissione e la ricezione dei messaggi.
+\\
+Durante la fase di trasmissione, il client acquisisce il messaggio dall'input del terminale e lo invia al server tramite il suo socket. Prima di inviare il messaggio, viene applicata la codifica UTF-8 per garantire la compatibilità con caratteri speciali come le lettere accentate.
+\\
+Nella fase di ricezione, il client decodifica i messaggi ricevuti dal server, sempre utilizzando UTF-8, in modo da poter leggere correttamente i messaggi inviati dagli altri utenti della chatroom.
 
 \chapter{Server}
 
