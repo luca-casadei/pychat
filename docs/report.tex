@@ -11,4 +11,14 @@
 \maketitle
 \tableofcontents
 
+\chapter{Introduzione}
+Questa è la documentazione del progetto di Programmazione di Reti relativo alla Traccia 1: \textit{Sistema di Chat Client-Server} in Python. Il progetto prevede la realizzazione di una chat che consente a più utenti di connettersi a un server centrale e comunicare tra loro in una chatroom condivisa.\\
+Il progetto è composto da due componenti principali: il \textbf{client} e il \textbf{server}.\\
+Il server gestisce le connessioni dei client e invia i messaggi in modalità broadcast all'interno della chat. Il client, invece, permette agli utenti di connettersi al server tramite protocollo TCP, di inviare messaggi e di visualizzare i messaggi ricevuti dalla chatroom degli altri utenti. Quando un client si connette al server, può vedere solo i messaggi inviati dopo che la connessione è stata stabilita; i messaggi precedenti non vengono "salvati" nel server. \\
+E' stato scelto di utilizzare il protocollo a livello di trasporto chiamato \textbf{T}ransimission \textbf{C}ontrol \textbf{P}rotocol perché garantisce la consegna affidabile dei dati, quindi nel caso di una chat è fondamentale che i messaggi vengano inviati e ricevuti in maniera corretta senza alcun tipo di perdita.
+
+\chapter{Client}
+
+\chapter{Server}
+
 \end{document}
