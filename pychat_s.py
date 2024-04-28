@@ -49,8 +49,8 @@ class ChatReqHandler(srv.BaseRequestHandler):
                 break
         # Quando si verifica un errore di disconnessione forzata, elimino il
         # client dalla lista.
-        do_broadcast(name + " si è disconnesso dalla chat.")
         clients.remove(self.request)
+        do_broadcast(name + " si è disconnesso dalla chat.")
 
 
 server = srv.ThreadingTCPServer(('', pcf.port), ChatReqHandler)
