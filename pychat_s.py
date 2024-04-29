@@ -19,9 +19,7 @@ def do_info_broadcast(message):
 # Invio a tutti i client connessi un messaggio da parte di un utente.
 def do_message_broadcast(name, message):
     for client_name, conn in clients.items():
-        if name == client_name:
-            conn.send(("Tu: " + message).encode(pcf.encoding))
-        else:
+        if name != client_name:
             conn.send((name + ": " + message).encode(pcf.encoding))
         
 # Invio la lista dei client connessi solo al client che lo ha eseguito.
@@ -53,6 +51,7 @@ class ChatReqHandler(srv.BaseRequestHandler):
                     if message.lower() == "/list":
                         self.request.send(get_user_list().encode(pcf.encoding))
                     else:
+                        self.request.send(("Tu: " + message).encode(pcf.encoding))
                         do_message_broadcast(name, message)
                 else:
                     # Se il messaggio è vuoto ho un errore o il client non è
