@@ -18,16 +18,19 @@ Il server gestisce le connessioni dei client e invia i messaggi in modalità bro
 E' stato scelto di utilizzare il protocollo a livello di trasporto chiamato \textbf{T}ransimission \textbf{C}ontrol \textbf{P}rotocol perché garantisce la consegna affidabile dei dati, quindi nel caso di una chat è fondamentale che i messaggi vengano inviati e ricevuti in maniera corretta senza alcun tipo di perdita.
 
 \chapter{Client}
-Per stabilire una connessione, il client deve specificare il proprio indirizzo IP in rete e un nome utente univoco, che servirà a identificarlo all'interno della chatroom.
+Il client utilizza un approccio connection-oriented IPv4 attraverso il modulo \textit{socket} di Python per stabilire una connessione con il server della chatroom. Prima di avviare l'applicazione, l'utente deve specificare l'indirizzo IP del server e un nome utente univoco, che servirà a identificarlo all'interno della chatroom. Questi parametri vengono passati come argomenti al momento dell'esecuzione del client.
 \\
-Inizialmente, il client crea un socket e tenta di stabilire una connessione con il server utilizzando l'indirizzo IP e la porta specificati. Se la connessione non riesce, il client gestisce l'errore sollevando un'eccezione.
+Una volta avviato, il client crea un socket e tenta di stabilire una connessione con il server utilizzando l'indirizzo IP e la porta specificati. Se la connessione viene stabilita con successo, il client invia il nome utente al server per identificarsi.
 \\
-Una volta stabilita la connessione, il client utilizza due thread separati per la trasmissione e la ricezione dei messaggi.
+Dopo la connessione, il client avvia due thread separati per gestire la trasmissione e la ricezione dei messaggi. 
 \\
-Durante la fase di trasmissione, il client acquisisce il messaggio dall'input del terminale e lo invia al server tramite il suo socket. Prima di inviare il messaggio, viene applicata la codifica UTF-8 per garantire la compatibilità con caratteri speciali come le lettere accentate.
+Il thread di trasmissione consente all'utente di digitare un messaggio dall'input del terminale e inviarlo al server tramite il socket. Prima di inviare il messaggio, viene applicata la codifica UTF-8 per garantire la compatibilità con caratteri speciali come le lettere accentate.
 \\
-Nella fase di ricezione, il client decodifica i messaggi ricevuti dal server, sempre utilizzando UTF-8, in modo da poter leggere correttamente i messaggi inviati dagli altri utenti della chatroom.
-
+Il thread di ricezione rimane in attesa di messaggi inviati dal server e li decodifica utilizzando sempre la codifica UTF-8 per garantire una corretta visualizzazione. Quando arriva un nuovo messaggio, il client lo visualizza sulla console.
+\\
+L'interfaccia utente fornisce all'utente le istruzioni necessarie per interagire con l'applicazione, inclusi i comandi per inviare messaggi e le notifiche sullo stato dell'applicazione, ad esempio l'avviso di CTRL-C per terminare l'esecuzione.
+\\
+Inoltre, il client tiene traccia degli utenti online all'interno della chatroom e offre la possibilità di visualizzare la lista degli utenti connessi in un determinato momento tramite il comando \textit{/list}.
 \chapter{Server}
 
 \end{document}
