@@ -15,12 +15,30 @@ clients = {}
 def do_info_broadcast(message):
     for conn in clients.values():
         conn.send(message.encode(pcf.encoding))
+    print(message)
 
 # Invio a tutti i client connessi un messaggio da parte di un utente.
 def do_message_broadcast(name, message):
     for client_name, conn in clients.items():
         if name != client_name:
             conn.send((name + ": " + message).encode(pcf.encoding))
+
+# Invio messaggio privato a un cliente specifico.
+def sendMessagePrivately(name,message):
+    for client_name, conn in clients.items():
+        if name == client_name:
+            conn.send((message).encode(pcf.encoding))
+
+# Invio la lista dei comandi
+def get_command_list():
+    commands = [
+        "--COMANDI--",
+        "/list - Per ottenere la lista degli utenti connessi",
+        "/pvt - Per inviare un messaggio privato a un altro utente",
+        "-----------"
+    ]
+    command_list = "\n".join(commands)
+    return command_list
         
 # Invio la lista dei client connessi solo al client che lo ha eseguito.
 def get_user_list():
@@ -57,6 +75,34 @@ class ChatReqHandler(srv.BaseRequestHandler):
                 if message: 
                     if message.lower() == "/list":
                         self.request.send(get_user_list().encode(pcf.encoding))
+                    elif message.lower() == "/pvt":
+                        self.request.send("A chi vuoi mandare il messaggio?".encode(pcf.encoding))
+                        self.request.send(get_user_list().encode(pcf.encoding))
+                        userToContact = str(self.request.recv(pcf.message_size), pcf.encoding).strip()  # Rimuovi spazi bianchi
+                        user_exists = False
+
+                        # Cerca il mittente basandoti sul socket
+                        sender = next(name for name, request in clients.items() if request == self.request)
+
+                        for client, client_socket in clients.items():
+                            if userToContact == str(client) and userToContact != sender:
+                                user_exists = True
+                                self.request.send("Inserire il Messaggio da Mandare: ".encode(pcf.encoding))
+                                messageToSend = str(self.request.recv(pcf.message_size), pcf.encoding)
+
+                                # Aggiungi il mittente al messaggio
+                                messageWithSender = f"PVT:[{sender}] {messageToSend}"
+
+                                sendMessagePrivately(userToContact, messageWithSender)
+                                break  # Esci dal loop una volta inviato il messaggio
+                            elif userToContact == sender:
+                                self.request.send("Il Mittente non puó mandare messaggi a se stesso.\n".encode(pcf.encoding))
+                                user_exists = True
+                                break
+                        if not user_exists:
+                            self.request.send("Utente non trovato o offline.\n".encode(pcf.encoding))
+                    elif message.lower() == "/cmds":
+                        self.request.send(get_command_list().encode(pcf.encoding))
                     else:
                         self.request.send(("Tu: " + message).encode(pcf.encoding))
                         do_message_broadcast(name, message)
