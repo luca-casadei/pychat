@@ -38,9 +38,16 @@ come parametro al metodo ThreadingTCPServer di socketserver.
 class ChatReqHandler(srv.BaseRequestHandler):
     def handle(self):
         # Client connesso, lo aggiungo alla lista
-        name = str(self.request.recv(pcf.message_size), pcf.encoding)
-        clients[name] = self.request
+        while True:
+            name = str(self.request.recv(pcf.message_size), pcf.encoding)
+            if name in clients:
+                self.request.send("Il nome utente è già in uso. Riprova con un altro nome:".encode(pcf.encoding))
+            else:
+                clients[name] = self.request
+                break
+
         do_info_broadcast(name + " si è unito alla chat.")
+
         while True:
             try:
                 message = str(
@@ -60,10 +67,12 @@ class ChatReqHandler(srv.BaseRequestHandler):
             except ConnectionResetError:
                 # Gestisco la disconnessione forzata dell'host remoto.
                 break
+
         # Quando si verifica un errore di disconnessione forzata, elimino il
         # client dalla lista.
         del clients[name]
         do_info_broadcast(name + " si è disconnesso dalla chat.")
+
 
 
 server = srv.ThreadingTCPServer(('', pcf.port), ChatReqHandler)
