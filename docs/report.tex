@@ -33,7 +33,13 @@ L'interfaccia utente fornisce all'utente le istruzioni necessarie per interagire
 Inoltre, il client tiene traccia degli utenti online all'interno della chatroom e offre la possibilità di visualizzare la lista degli utenti connessi in un determinato momento tramite il comando \textit{/list}.
 \chapter{Server}
 \section{Introduzione}
-Questo documento fornisce la documentazione per il Server della Chatroom, realizzato come parte del progetto di Programmazione di Reti. Il server consente agli utenti di connettersi e comunicare tramite una chatroom utilizzando il protocollo TCP/IP.
+Questo documento fornisce la documentazione per il Server della Chatroom, sviluppato come parte del progetto di Programmazione di Reti. Il server è progettato per consentire agli utenti di connettersi e comunicare tramite una chatroom utilizzando il protocollo TCP/IP.
+\\
+Il server è implementato in modo tale da essere continuamente in grado di ricevere pacchetti da ogni dispositivo collegato. Per gestire simultaneamente le connessioni multiple, il server utilizza un approccio basato su thread, con un thread separato per ciascuna connessione attiva.
+\\
+Quando arriva un nuovo messaggio da inviare, il server verifica l'effettiva presenza del destinatario controllando una tabella interna degli utenti connessi.
+\\
+Se il destinatario è online, il server inoltra il messaggio al destinatario appropriato. Tuttavia, se il destinatario non è presente nel registro interno del server, viene inviata una risposta al mittente specificando che l'utente richiesto non è connesso o non è stato trovato.
 \section{Funzionalità Principali}
 Il Server della Chatroom offre le seguenti funzionalità principali:
 \begin{itemize}
@@ -49,7 +55,7 @@ Il server è implementato in Python e utilizza il modulo \texttt{socketserver} p
 Il codice del server è suddiviso nelle seguenti sezioni:
 \begin{itemize}
 	\item \textbf{Gestione delle Connessioni}: Il server accetta le connessioni dei client e li aggiunge alla lista dei client connessi.
-	\item \textbf{Trasmissione dei Messaggi}: Il server gestisce la trasmissione dei messaggi broadcast e privati tra i client.
+	\item \textbf{Trasmissione dei Messaggi}: Il server gestisce la trasmissione dei messaggi broadcast e privati tra i client connessi.
 	\item \textbf{Gestione dei Comandi}: Il server supporta diversi comandi che consentono agli utenti di interagire con il server.
 \end{itemize}
 \section{Utilizzo}
@@ -61,8 +67,5 @@ Il server supporta i seguenti comandi:
 	\item \texttt{/pvt}: Consente di inviare un messaggio privato a un altro utente.
 	\item \texttt{/cmds}: Fornisce la lista dei comandi disponibili.
 \end{itemize}
-\section{Conclusioni}
-Il Server della Chatroom fornisce un'interfaccia da terminale per la comunicazione in tempo reale tra gli utenti.
-È progettato per essere semplice da usare e estendibile per supportare ulteriori funzionalità.
 
 \end{document}
