@@ -40,16 +40,12 @@ Il thread di ricezione rimane in attesa di messaggi inviati dal server e li deco
 L'interfaccia utente fornisce all'utente le istruzioni necessarie per interagire con l'applicazione, inclusi i comandi per inviare messaggi e le notifiche sullo stato dell'applicazione, ad esempio l'avviso di CTRL-C per terminare l'esecuzione.
 \\
 Inoltre, il client è dotato di comandi configurati dal server, tra cui il comando /list per tenere traccia degli utenti online nella chatroom, il comando /pvt per inviare messaggi privati a un client specifico e il comando /cmds per visualizzare la lista dei comandi disponibili.
+
 \chapter{Server}
-\section{Introduzione}
-Questo documento fornisce la documentazione per il Server della Chatroom, sviluppato come parte del progetto di Programmazione di Reti. Il server è progettato per consentire agli utenti di connettersi e comunicare tramite una chatroom utilizzando il protocollo TCP/IP.
-\\
+Il Server della Chatroom è progettato per consentire agli utenti di connettersi e comunicare utilizzando il protocollo TCP/IP. Il server mantiene una lista dei client connessi e gestisce la trasmissione dei messaggi tra di essi.
 Il server è implementato in modo tale da essere continuamente in grado di ricevere pacchetti da ogni dispositivo collegato. Per gestire simultaneamente le connessioni multiple, il server utilizza un approccio basato su thread, con un thread separato per ciascuna connessione attiva.
+Quando arriva un nuovo messaggio da inviare, il server verifica l'effettiva presenza del destinatario controllando una tabella interna degli utenti connessi. Se il destinatario è online, il server inoltra il messaggio al destinatario appropriato. Tuttavia, se il destinatario non è presente nel registro interno del server, viene inviata una risposta al mittente specificando che l'utente richiesto non è connesso o non è stato trovato.
 \\
-Quando arriva un nuovo messaggio da inviare, il server verifica l'effettiva presenza del destinatario controllando una tabella interna degli utenti connessi.
-\\
-Se il destinatario è online, il server inoltra il messaggio al destinatario appropriato. Tuttavia, se il destinatario non è presente nel registro interno del server, viene inviata una risposta al mittente specificando che l'utente richiesto non è connesso o non è stato trovato.
-\section{Funzionalità Principali}
 Il Server della Chatroom offre le seguenti funzionalità principali:
 \begin{itemize}
 	\item Gestione delle connessioni dei client.
@@ -58,23 +54,18 @@ Il Server della Chatroom offre le seguenti funzionalità principali:
 	\item Fornitura della lista degli utenti connessi.
 	\item Fornitura della lista dei comandi disponibili.
 \end{itemize}
-\section{Implementazione}
-Il server è implementato in Python e utilizza il modulo \texttt{socketserver} per gestire le connessioni dei client. Il server mantiene una lista dei client connessi e gestisce la trasmissione dei messaggi tra di essi.
-\subsection{Struttura del Codice}
 Il codice del server è suddiviso nelle seguenti sezioni:
 \begin{itemize}
-	\item \textbf{Gestione delle Connessioni}: Il server accetta le connessioni dei client e li aggiunge alla lista dei client connessi.
-	\item \textbf{Trasmissione dei Messaggi}: Il server gestisce la trasmissione dei messaggi broadcast e privati tra i client connessi.
-	\item \textbf{Gestione dei Comandi}: Il server supporta diversi comandi che consentono agli utenti di interagire con il server.
+	\item Gestione delle Connessioni: Il server accetta le connessioni dei client e li aggiunge alla lista dei client connessi.
+	\item Trasmissione dei Messaggi: Il server gestisce la trasmissione dei messaggi broadcast e privati tra i client connessi.
+	\item Gestione dei Comandi: Il server supporta diversi comandi che consentono agli utenti di interagire con il server.
 \end{itemize}
-\section{Utilizzo}
-Per avviare il server, eseguire il file Python \texttt{server.py}. Il server rimarrà in ascolto per le connessioni dei client sulla porta specificata nel file di configurazione.
-\subsection{Comandi Supportati}
 Il server supporta i seguenti comandi:
 \begin{itemize}
-	\item \texttt{/list}: Fornisce la lista degli utenti connessi alla chatroom.
-	\item \texttt{/pvt}: Consente di inviare un messaggio privato a un altro utente.
-	\item \texttt{/cmds}: Fornisce la lista dei comandi disponibili.
+	\item \texttt{/list}: Questo comando restituisce la lista degli utenti attualmente connessi alla chatroom. Quando un client invia questo comando al server, il server invia al client la lista degli utenti connessi.
+	\item \texttt{/pvt}: Questo comando consente a un utente di inviare un messaggio privato ad un altro utente. Quando un client invia questo comando al server, il server invia al client la richiesta di specificare il destinatario del messaggio. Successivamente, il client invia il nome dell'utente destinatario al server. Alla fine, il server chiede al client il messaggio da inviare al destinatario. Il server quindi invia il messaggio privato al destinatario specificato. Se l'utente specificato come destinatario non è trovato nella lista degli utenti connessi o è offline, il server invia un messaggio al client mittente indicando che l'utente specificato non è stato trovato o è offline.
+	Se il mittente tenta di inviare un messaggio privato a se stesso, il server invia un messaggio al client mittente indicando che non è possibile inviare messaggi privati a se stesso.
+	\item \texttt{/cmds}: Questo comando restituisce la lista dei comandi disponibili nella chatroom. Quando un client invia questo comando al server, il server invia al client la lista dei comandi supportati.
 \end{itemize}
 
 \chapter{Conclusioni}
