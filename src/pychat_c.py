@@ -70,7 +70,8 @@ except Exception as error_data:
     print(Exception, ":", error_data)
     sys.exit(0)
 
-print("Connessione al server riuscita, avvio i processi di ascolto e invio...")
+print("Connessione al server riuscita, avvio i processi di ascolto e invio...\n"+
+      "-- INFORMAZIONI: Digitare un messaggio e invio per scrivere in chat. --")
 
 # Invio il nome scelto al server.
 pychat_client.send(name.encode(encoding=pcf.encoding))
@@ -85,8 +86,6 @@ t_send.daemon = True
 # Faccio partire i thread.
 t_read.start()
 t_send.start()
-
-print("-- INFORMAZIONI: Digitare un messaggio e invio per scrivere in chat. --")
 
 # Attendo i processi figli e la loro chiusura, senza che il thread main
 # termini.
