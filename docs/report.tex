@@ -12,10 +12,19 @@
 \tableofcontents
 
 \chapter{Introduzione}
-Questa è la documentazione del progetto di Programmazione di Reti relativo alla Traccia 1: \textit{Sistema di Chat Client-Server} in Python. Il progetto prevede la realizzazione di una chat che consente a più utenti di connettersi a un server centrale e comunicare tra loro in una chatroom condivisa.\\
-Il progetto è composto da due componenti principali: il \textbf{client} e il \textbf{server}.\\
-Il server gestisce le connessioni dei client e invia i messaggi in modalità broadcast all'interno della chat. Il client, invece, permette agli utenti di connettersi al server tramite protocollo TCP, di inviare messaggi e di visualizzare i messaggi ricevuti dalla chatroom degli altri utenti. Quando un client si connette al server, può vedere solo i messaggi inviati dopo che la connessione è stata stabilita; i messaggi precedenti non vengono "salvati" nel server. \\
-E' stato scelto di utilizzare il protocollo a livello di trasporto chiamato \textbf{T}ransimission \textbf{C}ontrol \textbf{P}rotocol perché garantisce la consegna affidabile dei dati, quindi nel caso di una chat è fondamentale che i messaggi vengano inviati e ricevuti in maniera corretta senza alcun tipo di perdita.
+Questa è la documentazione del progetto di Programmazione di Reti relativo alla Traccia 1: \textit{Sistema di Chat Client-Server} in Python. Il progetto mira a implementare una chat che permetta a più utenti di connettersi a un server centrale e di comunicare tra loro in una chatroom condivisa.
+\\
+Il progetto è suddiviso in due componenti principali: il \textbf{client} e il \textbf{server}.
+\\
+Il server si occupa di gestire le connessioni dei client e di instradare i messaggi in modalità broadcast all'interno della chat. Il client, invece, permette agli utenti di connettersi al server tramite il protocollo TCP, di inviare messaggi e di visualizzare i messaggi ricevuti dagli altri utenti nella chatroom. Quando un client si connette al server, può vedere solo i messaggi inviati dopo che la connessione è stata stabilita; i messaggi precedenti non vengono "salvati" nel server.
+\\
+Nell'implementazione del progetto, sono state adottate diverse scelte architetturali e di progettazione. Ad esempio, la comunicazione tra client e server avviene attraverso il protocollo TCP, scelto per la sua affidabilità nella trasmissione dei dati. Inoltre, l'utilizzo dei thread consente di gestire in modo concorrente l'invio e la ricezione dei messaggi sui due lati della connessione, garantendo un'esperienza fluida agli utenti.
+\\
+Nel codice del client, è stata implementata una logica per la gestione dei thread separati per l'invio e la ricezione dei messaggi, in modo che l'utente possa scrivere e leggere contemporaneamente senza bloccare il programma. 
+\\
+D'altra parte, nel codice del server, è stata implementata la logica per gestire le connessioni multiple dei client e la distribuzione dei messaggi ricevuti a tutti i client connessi.
+\\
+In definitiva, il progetto si propone di offrire una soluzione robusta e affidabile per consentire a più utenti di comunicare in tempo reale tramite una chatroom condivisa.
 
 \chapter{Client}
 Il client utilizza un approccio connection-oriented IPv4 attraverso il modulo \textit{socket} di Python per stabilire una connessione con il server della chatroom. Prima di avviare l'applicazione, l'utente deve specificare l'indirizzo IP del server e un nome utente univoco, che servirà a identificarlo all'interno della chatroom. Questi parametri vengono passati come argomenti al momento dell'esecuzione del client.
