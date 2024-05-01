@@ -1,5 +1,10 @@
 # pychat
 Networks programming course's final project.
+
+Luca Casadei: 0001069237 \
+Francesco Pazzaglia: 0001077423 \
+Martin Tomassi: 0001077737
+
 ## Usage
 ### Starting the server:
 ```bash
